@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\Transaction\UserTransactionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,5 +24,13 @@ Route::group(['prefix' => 'auth'], function () {
         Route::get('profile', [AuthController::class, 'profile']);
         Route::post('logout', [AuthController::class, 'logout']);
         Route::post('refresh', [AuthController::class, 'refresh']);
+    });
+});
+
+Route::middleware('auth:api')->group(function () {
+    Route::group(['prefix' => 'transactions'], function () {
+        Route::post('create', [UserTransactionController::class, 'create']);
+        Route::post('view', [UserTransactionController::class, 'view']);
+        Route::get('list', [UserTransactionController::class, 'list']);
     });
 });

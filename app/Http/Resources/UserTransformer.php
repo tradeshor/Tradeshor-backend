@@ -19,6 +19,7 @@ class UserTransformer extends JsonResource
             'name' => $this->name,
             'email' => $this->email,
             'role' => $this->role,
+            'wallet' => $this->wallet_amount,
             'created_at' => $this->created_at->toDateTimeString(),
         ];
     }
