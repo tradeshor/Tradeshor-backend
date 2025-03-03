@@ -43,8 +43,12 @@ class AuthController extends Controller
             ]);
 
             return response()->json(['message' => 'User registered successfully'], 200);
-      } catch (\Throwable $th) {
-        throw new \Exception("Error Processing Request", 1);     
+      } catch (\Exception $th) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Failed to login',
+                'error' => $th->getMessage(),
+            ], 500);
         
       }
       

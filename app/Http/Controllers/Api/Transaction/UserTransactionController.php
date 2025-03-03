@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Transaction;
 
 use Illuminate\Http\Request;
 use App\Models\UserTransaction;
+use App\Models\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 
@@ -76,7 +77,7 @@ class UserTransactionController extends Controller
         ]);
     }
 
-    public function updateTransactionStatus($transaction_id)
+    public function updateTransactionStatus(Request $request, $transaction_id)
     {
         $validatedData =  $request->validate([
             'status' => 'required',
@@ -118,7 +119,7 @@ class UserTransactionController extends Controller
             return response()->json([
                 'status' => false,
                 'message' => 'Failed to update transaction status',
-                'error' => $e->getMessage(),
+                'error' => $th->getMessage(),
             ], 500);
         }
     }
