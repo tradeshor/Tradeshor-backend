@@ -24,7 +24,9 @@ class AdminActionController extends Controller
     {
         $request->validate([
             'email' => 'required|email',
-            'amount' => 'required|numeric',
+            'amount' => 'nullable|numeric',
+            'active_investment' => 'nullable|numeric',
+            'earning' => 'nullable|numeric',
         ]);
 
         $user = User::where('email', $request->email)->first();
@@ -36,7 +38,19 @@ class AdminActionController extends Controller
             ], 404);
         }
 
-        $user->wallet_amount += $request->amount;
+        if ($request->active_investment) {
+            $user->active_investment += $request->active_investment;
+        }
+
+        if ($request->earning) {
+            $user->earning += $request->earning;
+        }
+        
+        if ($request->amount) {
+            $user->wallet_amount += $request->amount;
+            $user->deposits += $request->amount;
+        }
+      
         $user->save();
 
         return response()->json([
@@ -50,7 +64,9 @@ class AdminActionController extends Controller
     {
         $request->validate([
             'email' => 'required|email',
-            'amount' => 'required|numeric',
+            'amount' => 'nullable|numeric',
+            'active_investment' => 'nullable|numeric',
+            'earning' => 'nullable|numeric',
         ]);
 
         $user = User::where('email', $request->email)->first();
@@ -62,7 +78,19 @@ class AdminActionController extends Controller
             ], 404);
         }
 
-        $user->wallet_amount -= $request->amount;
+        if ($request->active_investment) {
+            $user->active_investment -= $request->active_investment;
+        }
+
+        if ($request->earning) {
+            $user->earning -= $request->earning;
+        }
+
+        if ($request->amount) {
+            $user->wallet_amount -= $request->amount;
+            $user->withdrawals += $request->amount;
+        }
+       
         $user->save();
 
         return response()->json([
@@ -87,11 +115,18 @@ class AdminActionController extends Controller
         $total_users = User::count();
        
         $total_balance = User::sum('wallet_amount');
-
+        $totl_investment = User::sum('active_investment');
+        $totl_earning = User::sum('earning');
+        $totl_deposits = User::sum('deposits');
+        $total_withdrawals = User::sum('withdrawals');
         $total_transaction_amount = UserTransaction::sum('amount');
 
         return response()->json([
             'status' => true,
+            'total_investment' => $totl_investment,
+            'total_earning' => $totl_earning,
+            'total_deposits' => $totl_deposits,
+            'total_withdrawals' => $total_withdrawals,
             'total_users' => $total_users,
             'total_balance' => $total_balance,
             'total_transaction_amount' => $total_transaction_amount,
